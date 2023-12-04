@@ -1,0 +1,69 @@
+<!-- templates/refresh_messages.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Refresh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        // Auto-refresh every 10 seconds
+        setInterval(function() {
+            fetch('/refresh_messages', { method: 'GET', cache: 'no-cache' });
+        }, 10000);
+
+        // Function to update countdown timer
+        function updateCountdownTimer(seconds) {
+            const countdownTimer = document.getElementById('countdown-timer');
+            if (countdownTimer) {
+                countdownTimer.innerText = `New Messages in ${seconds} seconds...`;
+            }
+        }
+
+        // Function to start the countdown timer
+        function startCountdown(seconds) {
+            let timer = seconds;
+            updateCountdownTimer(timer);
+
+            const countdownInterval = setInterval(function() {
+                timer--;
+                updateCountdownTimer(timer);
+
+                if (timer <= 0) {
+                    clearInterval(countdownInterval);
+                    // Restart the countdown with a 2-second delay
+                    setTimeout(function() {
+                        startCountdown(seconds);
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        // Start the countdown timer when the page loads
+        window.onload = function() {
+            startCountdown(10); // Set the initial countdown time in seconds
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="refresh-message">
+            <!-- Content from the /refresh_messages route will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Additional code provided -->
+    <main>
+        <div class="preloader">
+            <div class="preloader__square"></div>
+            <div class="preloader__square"></div>
+            <div class="preloader__square"></div>
+            <div class="preloader__square"></div>
+        </div>
+        <div class="status">Loading<span class="status__dot">.</span><span class="status__dot">.</span><span class="status__dot">.</span></div>
+
+        <!-- Countdown timer for new messages -->
+        <div id="countdown-timer" class="countdown-timer"></div>
+    </main>
+</body>
+</html>
